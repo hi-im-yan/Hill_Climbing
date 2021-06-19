@@ -22,5 +22,7 @@ No Terminal (Linux)
 ### Após executar
 O programa irá pedir quantas soluções do TSP irá querer por arquivo de entrada.
 > **Obs:** Recomendo algo como 3 a 5. Tentei com 25 soluções e demora cerca de 30 minutos.  
+>  
+
 O programa automaticamente irá criar uma pasta chamada HillClimbing_Solucoes no mesmo local do programa. Nele vai ter as soluções encontradas para cada arquivo de entrada.  
 Se executar o programa novamente os dados já obtidos não serão sobrescritos. Pelo contrário, irá adicionar novos dados coletados pela nova execução.
