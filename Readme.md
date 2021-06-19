@@ -25,4 +25,5 @@ O programa irá pedir quantas soluções do TSP irá querer por arquivo de entra
 >  
 
 O programa automaticamente irá criar uma pasta chamada HillClimbing_Solucoes no mesmo local do programa. Nele vai ter as soluções encontradas para cada arquivo de entrada.  
-Se executar o programa novamente os dados já obtidos não serão sobrescritos. Pelo contrário, irá adicionar novos dados coletados pela nova execução.
+Se executar o programa novamente os dados já obtidos não serão sobrescritos. Pelo contrário, irá adicionar novos dados coletados pela nova execução.<br>
+No repositório já existe a pasta HillClimbing_Solucoes que obtive durante minha execução para agilizar a visualização dos resultados. Você pode deletar a pasta de soluções sem problemas e executar o algorítmo. 
