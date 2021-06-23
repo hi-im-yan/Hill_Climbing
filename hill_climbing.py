@@ -11,12 +11,11 @@ def main():
             print("Arquivo de entrada: " + nome_arquivo[9:])
 
             inputs = [linha.rstrip() for linha in arquivo] #lê as linhas do arquivo e retira os \n
-            rotas = criar_rotas(inputs)
+            matriz_pesos = gerar_pesos(inputs)
             for i in range(quantidade_de_resultados):
                 print("Gerando solução nº:", i+1, end='', flush=True)
 
-                solucao, valor = hill_climbing(rotas)
-                # print(solucao, valor)
+                solucao, valor = hill_climbing(matriz_pesos)
                 escrever_em_arquivo(nome_arquivo, solucao, valor)
                 print(" - Executado.")
             print()
@@ -25,8 +24,8 @@ def main():
 
 
 #cria uma matriz, onde cada linha representa a distncia para todos os vértices existentes incluindo ele mesmo
-def criar_rotas(inputs):
-    rotas = []
+def gerar_pesos(inputs):
+    matriz_pesos = []
     for input_ in inputs:
         distancias = []
         valores = input_.split() #cria uma lista de valores separados por espaços ['1', '6734', '1453'] ['2', '2233', '10']
@@ -45,10 +44,9 @@ def criar_rotas(inputs):
             vertice2 = {'vertice': valores2[0], 'x': valores2[1], 'y': valores2[2]}
             distancias.append(calcular_distancia(vertice, vertice2))
         
-        rotas.append(distancias)
+        matriz_pesos.append(distancias)
 
-    # imprimir_rotas(rotas)
-    return rotas
+    return matriz_pesos
 
 
 # calcula a distancia entre dois vertices
@@ -60,11 +58,11 @@ def calcular_distancia(vertice, vertice2):
     return round(distancia_vertice, 2) # retorna valor arredondado para duas casas decimais
 
 
-def gerar_solucao_aleatoria(rotas):
-    cidades = list(range(len(rotas)))
+def gerar_solucao_aleatoria(matriz_pesos):
+    cidades = list(range(len(matriz_pesos)))
     solucao = []
 
-    for i in range(len(rotas)):
+    for i in range(len(matriz_pesos)):
         cidade_aleatoria = cidades[random.randint(0, len(cidades) - 1)]
         solucao.append(cidade_aleatoria)
         cidades.remove(cidade_aleatoria)
@@ -72,10 +70,10 @@ def gerar_solucao_aleatoria(rotas):
     return solucao
 
 
-def tamanho_rota(rotas, solucao):
+def tamanho_rota(matriz_pesos, solucao):
     valor_solucao = 0
     for i in range(len(solucao)):
-        valor_solucao += rotas[solucao[i - 1]][solucao[i]] # soma a distancia da cidade anterior com a atual
+        valor_solucao += matriz_pesos[solucao[i - 1]][solucao[i]] # soma a distancia da cidade anterior com a atual
     
     return valor_solucao
 
@@ -85,7 +83,7 @@ def get_vizinhos(solucao):
     vizinhos = []
     for i in range(len(solucao)):
         for j in range(i + 1, len(solucao)):
-            vizinho = solucao.copy()
+            vizinho = solucao.copy() # função copy para gerar uma cópia da lista q não faz referência a lista original
             vizinho[i] = solucao[j]
             vizinho[j] = solucao[i]
             vizinhos.append(vizinho)
@@ -93,12 +91,12 @@ def get_vizinhos(solucao):
 
 
 # calcula o melhor vizinho baseado na distancia entre a cidade atual
-def get_melhor_vizinho(rotas, vizinhos):
-    melhor_valor_rota = tamanho_rota(rotas, vizinhos[0])
+def get_melhor_vizinho(matriz_pesos, vizinhos):
+    melhor_valor_rota = tamanho_rota(matriz_pesos, vizinhos[0])
     melhor_vizinho = vizinhos[0]
 
     for vizinho in vizinhos:
-        valor_rota_atual = tamanho_rota(rotas, vizinho)
+        valor_rota_atual = tamanho_rota(matriz_pesos, vizinho)
 
         if valor_rota_atual < melhor_valor_rota:
             melhor_valor_rota = valor_rota_atual
@@ -107,26 +105,20 @@ def get_melhor_vizinho(rotas, vizinhos):
     return melhor_vizinho, melhor_valor_rota
 
 
-def hill_climbing(rotas):
-    solucao_atual = gerar_solucao_aleatoria(rotas)
-    valor_da_solucao = tamanho_rota(rotas, solucao_atual)
+def hill_climbing(matriz_pesos):
+    solucao_atual = gerar_solucao_aleatoria(matriz_pesos)
+    valor_da_solucao = tamanho_rota(matriz_pesos, solucao_atual)
     vizinhos = get_vizinhos(solucao_atual)
-    melhor_vizinho, melhor_valor_rota_vizinho = get_melhor_vizinho(rotas, vizinhos)
+    melhor_vizinho, melhor_valor_rota_vizinho = get_melhor_vizinho(matriz_pesos, vizinhos)
 
     while melhor_valor_rota_vizinho < valor_da_solucao:
         solucao_atual = melhor_vizinho
         valor_da_solucao = melhor_valor_rota_vizinho
         vizinhos = get_vizinhos(solucao_atual)
-        melhor_vizinho, melhor_valor_rota_vizinho = get_melhor_vizinho(rotas, vizinhos)
+        melhor_vizinho, melhor_valor_rota_vizinho = get_melhor_vizinho(matriz_pesos, vizinhos)
 
     return solucao_atual, valor_da_solucao
         
-
-
-def imprimir_rotas(rotas):
-    for rota in rotas:
-        print(rota)
-        print()
 
 def escrever_em_arquivo(nome_arquivo, solucao, valor): 
 
